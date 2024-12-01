@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <style>
+        
+body {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.semaforo {
+    width: 500px;
+    height: 700px;
+    background-color: #333;
+    border-radius: 20px;
+    margin: 20px auto;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.light {
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background-color: grey;
+}
+
+
+.red {
+    background-color: red;
+}
+
+.green {
+    background-color: green;
+}
+
+
+.result {
+    font-size: 1.5em;
+    margin-top: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 1.2em;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test dei Riflessi</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Test dei Riflessi</h1>
+    <div class="semaforo">
+        <div id="redLight" class="light red"></div>
+        <div id="greenLight" class="light"></div>
+    </div>
+    <button id="startButton">Avvia</button>
+    <div id="result" class="result"></div>
+
+    <script>
+        const redLight = document.getElementById("redLight");
+        const greenLight = document.getElementById("greenLight");
+        const startButton = document.getElementById("startButton");
+        const result = document.getElementById("result");
+
+        let startTime = 0;
+        let timeoutId;
+
+        function startTest() {
+
+            result.textContent = "";
+            startButton.textContent = "Aspetta...";
+            startButton.disabled = true;
+
+
+            redLight.classList.add("red");
+            greenLight.classList.remove("green");
+
+            const delay = Math.random() * 3000 + 2000; 
+            timeoutId = setTimeout(() => {
+                redLight.classList.remove("red");
+                greenLight.classList.add("green");
+                startTime = performance.now();
+                startButton.textContent = "Clicca!";
+                startButton.disabled = false;
+            }, delay);
+        }
+
+        function handleClick() {
+            if (startTime === 0) {
+                result.textContent = "Troppo presto! Riprova.";
+                clearTimeout(timeoutId);
+                resetTest();
+            } else {
+                const reactionTime = performance.now() - startTime;
+                result.textContent = `Tempo di reazione: ${reactionTime.toFixed(2)} ms`;
+                resetTest();
+            }
+        }
+
+        function resetTest() {
+            startTime = 0;
+            startButton.textContent = "Avvia";
+            startButton.disabled = false;
+            redLight.classList.add("red");
+            greenLight.classList.remove("green");
+        }
+
+        startButton.addEventListener("click", () => {
+            if (startButton.textContent === "Avvia") {
+                startTest();
+            } else {
+                handleClick();
+            }
+        });
+    </script>
+</body>
+</html>
